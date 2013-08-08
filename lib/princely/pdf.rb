@@ -16,13 +16,11 @@ module Princely
     end
 
     def logger
-      @logger ||= defined?(Rails) ? Rails.logger : StdoutLogger
+      @logger ||= defined?(Rails) ? Rails.logger : Logger.new(log_file)
     end
 
     def log_file
-      @log_file ||= defined?(Rails) ?
-              Rails.root.join("log/prince.log") :
-              File.expand_path(File.dirname(__FILE__) + "/log/prince.log")
+      @log_file ||= defined?(Rails) ? Rails.root.join("log/prince.log") : nil
     end
 
     def ruby_platform

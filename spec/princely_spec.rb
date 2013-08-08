@@ -46,9 +46,9 @@ describe Princely::PDF do
        File.stub(:executable?).and_return(true)
       end
 
-      it "defaults to STDOUT" do
+      it "defaults to vanilla logger" do
         prince = Princely::PDF.new
-        prince.logger.should == Princely::StdoutLogger
+        prince.logger.should be_an_instance_of Logger
       end
 
       it "can be set" do
@@ -70,10 +70,9 @@ describe Princely::PDF do
         Object.send(:remove_const, :Rails)
       end
 
-      it "defaults outside of Rails" do
-        File.stub(:dirname).and_return('outside_rails')
+      it "defaults to standard out" do
         prince = Princely::PDF.new
-        prince.log_file.should == File.expand_path('outside_rails/log/prince.log')
+        prince.log_file.should be_nil
       end
     end
 
