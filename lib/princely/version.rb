@@ -1,3 +1,3 @@
-class Princely
-  VERSION = "1.4.0"
+module Princely
+  VERSION = "2.0"
 end

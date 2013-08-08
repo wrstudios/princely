@@ -1,27 +1,27 @@
 require 'spec_helper'
 
-describe Princely do
+describe Princely::PDF do
   let(:html_doc)  { "<html><body>Hello World</body></html>"}
   
-  # it "generates a PDF from HTML" do
-  #   pdf = Princely.new.pdf_from_string html_doc
-  #   pdf.should start_with("%PDF-1.4")
-  #   pdf.rstrip.should end_with("%%EOF")
-  #   pdf.length > 100
-  # end
+  it "generates a PDF from HTML" do
+    pdf = Princely::PDF.new.pdf_from_string html_doc
+    pdf.should start_with("%PDF-1.4")
+    pdf.rstrip.should end_with("%%EOF")
+    pdf.length > 100
+  end
 
   describe "executable" do
     it "raises an error if path does not exist" do
-      expect { Princely.new(:path => "/some/fake/path") }.to raise_error
+      expect { Princely::PDF.new(:path => "/some/fake/path") }.to raise_error
     end
 
     it "raises an error if blank" do
-      expect { Princely.new(:path => "") }.to raise_error
+      expect { Princely::PDF.new(:path => "") }.to raise_error
     end
   end
 
   describe "find_prince_executable" do
-    let(:prince) { Princely.new }
+    let(:prince) { Princely::PDF.new }
 
     it "returns a path for windows" do
       prince.stub(:ruby_platform).and_return('mswin32')
@@ -36,24 +36,24 @@ describe Princely do
 
   context "faked princexml executable" do
     before(:each) do
-     Princely.any_instance.stub(:find_prince_executable).and_return('/fake/path')
+     Princely::PDF.any_instance.stub(:find_prince_executable).and_return('/fake/path')
      File.stub(:executable?).and_return(true)
     end
 
     describe "logger" do
       before(:each) do
-       Princely.any_instance.stub(:find_prince_executable).and_return('/fake/path')
+       Princely::PDF.any_instance.stub(:find_prince_executable).and_return('/fake/path')
        File.stub(:executable?).and_return(true)
       end
 
       it "defaults to STDOUT" do
-        prince = Princely.new
+        prince = Princely::PDF.new
         prince.logger.should == Princely::StdoutLogger
       end
 
       it "can be set" do
         LoggerClass = Class.new
-        prince = Princely.new(:logger => LoggerClass.new)
+        prince = Princely::PDF.new(:logger => LoggerClass.new)
         prince.logger.should be_an_instance_of LoggerClass
       end
     end
@@ -63,7 +63,7 @@ describe Princely do
         # Fake Rails for this test.
         Rails = double(:root => Pathname.new('in_rails'), :logger => nil)
         
-        prince = Princely.new
+        prince = Princely::PDF.new
         prince.log_file.to_s.should == 'in_rails/log/prince.log'
 
         # Unfake Rails
@@ -72,13 +72,13 @@ describe Princely do
 
       it "defaults outside of Rails" do
         File.stub(:dirname).and_return('outside_rails')
-        prince = Princely.new
+        prince = Princely::PDF.new
         prince.log_file.should == File.expand_path('outside_rails/log/prince.log')
       end
     end
 
     describe "exe_path" do
-      let(:prince) { Princely.new }
+      let(:prince) { Princely::PDF.new }
 
       before(:each) do
         prince.stub(:log_file).and_return('/tmp/test_log')
