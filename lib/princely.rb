@@ -18,6 +18,3 @@ require 'logger'
 require 'princely/pdf'
 require 'princely/stdout_logger'
 require 'princely/rails' if defined?(Rails)
-
-module Princley
-end
